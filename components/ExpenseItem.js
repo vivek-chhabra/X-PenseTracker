@@ -3,13 +3,14 @@ import React from "react";
 import { Colors } from "../utils";
 
 export default function ExpenseItem({ data }) {
+    const { expense, amount } = data;
     return (
-        <Pressable style={styles.expense}>
+        <Pressable style={styles.expense} onPress={() => console.log('working')}>
             <View>
-                <Text style={{ fontWeight: "bold", color: Colors.dark_text, fontSize: 16 }}>{data.expense}</Text>
+                <Text style={{ fontWeight: "bold", color: Colors.dark_text, fontSize: 16 }}>{expense}</Text>
                 <Text style={{ fontSize: 12 }}>2021-02-02</Text>
             </View>
-            <Text style={styles.amt}>{data.amount}</Text>
+            <Text style={styles.amt}>₹{amount.toFixed(2)}</Text>
         </Pressable>
     );
 }
@@ -30,10 +31,10 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
         paddingHorizontal: 6,
         textAlign: "center",
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.dark_text,
         borderRadius: 5,
         fontWeight: "bold",
-        color: Colors.light_text,
+        color: Colors.light_bg,
         fontSize: 16,
     },
 });
