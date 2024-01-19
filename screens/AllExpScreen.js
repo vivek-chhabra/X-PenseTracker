@@ -1,25 +1,37 @@
-import { View, Text, StyleSheet, FlatList } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet, FlatList, ScrollView } from "react-native";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import ExpenseItem from "../components/ExpenseItem";
 import { Colors, getSum } from "../utils";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useFocusEffect } from "@react-navigation/native";
 
-const data = [
-    { expense: "A book", amount: 50.556 },
-    { expense: "A cake", amount: 55 },
-    { expense: "A bat", amount: 5.5 },
-    { expense: "A banana", amount: 70.55 },
-];
+export default function AllExpScreen({ navigation, route }) {
+    const [AllExpenses, setAllExpenses] = useState([]);
 
-export default function AllExpScreen() {
+    useFocusEffect(() => {
+        (async () => {
+            let date = new Date();
+            date = `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`;
+            const res = await AsyncStorage.getItem("expenses");
+            data = JSON.parse(res);
+            data = route.name === "Recent Expenses" ? data.filter((exp) => exp.date === date) : data;
+            setAllExpenses(data);
+        })();
+    });
+
     return (
         <View style={styles.container}>
-            {data?.length !== 0 ? (
+            {AllExpenses?.length > 0 ? (
                 <>
                     <View style={styles.total}>
                         <Text style={styles.totalStyle}>Total :</Text>
-                        <Text style={{ ...styles.totalStyle, minWidth: 70, backgroundColor: Colors.dark_text, textAlign: "center", padding: 5, borderRadius: 50, color: Colors.light_bg }}>₹ {getSum(data, "amount").toFixed(2)}</Text>
+                        <Text style={{ ...styles.totalStyle, minWidth: 70, backgroundColor: Colors.dark_text, textAlign: "center", padding: 5, borderRadius: 50, color: Colors.light_bg, paddingHorizontal: 10 }}>₹ {getSum(AllExpenses, "expenseAmt").toFixed(2)}</Text>
                     </View>
-                    <FlatList data={data} renderItem={({ item }) => <ExpenseItem data={item} />} contentContainerStyle={styles.listStyle} />
+                    <ScrollView>
+                        {AllExpenses?.map((ele) => (
+                            <ExpenseItem data={ele} />
+                        ))}
+                    </ScrollView>
                 </>
             ) : (
                 <View style={{ height: "100%" }}>
@@ -35,6 +47,8 @@ const styles = StyleSheet.create({
         backgroundColor: Colors.dark_text,
         paddingHorizontal: 15,
         paddingVertical: 20,
+        flex: 1,
+        flexGrow: 1,
     },
     total: {
         flexDirection: "row",
@@ -58,7 +72,7 @@ const styles = StyleSheet.create({
     totalStyle: {
         fontSize: 16,
         fontWeight: "bold",
-        color: Colors.white,
+        color: Colors.dark_text,
     },
     noExp: {
         width: "100%",

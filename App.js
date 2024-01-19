@@ -1,77 +1,109 @@
 import { View, StyleSheet, Pressable } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import React from "react";
+import React, { useState } from "react";
 import AllExpScreen from "./screens/AllExpScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "./utils";
-// import AddExpenseScreen from "./screens/AddExpenseScreen";
+import AddExpenseScreen from "./screens/AddExpenseScreen";
+import ManageExpenses from "./screens/ManageExpenses";
 
 export default function App() {
     const Stack = createNativeStackNavigator();
     const BottomTab = createBottomTabNavigator();
 
-    const headerIcon = () => {
+    const [expenses, setExpenses] = useState([]);
+
+    const headerIcon = (navigation) => {
         return (
-            <Pressable style={styles.icon} onPress={() => console.log("works")}>
+            <Pressable style={styles.icon} onPress={() => navigation.navigate("addExpenses", { expenses, setExpenses })}>
                 <Ionicons name="add-circle-outline" color={Colors.dark_text} style={{ fontSize: 30, color: Colors.light_bg, textAlign: "center", left: 1, bottom: 1 }} />
             </Pressable>
         );
     };
+
+    const BottomTabsNavigator = () => {
+        return (
+            <BottomTab.Navigator
+                screenOptions={{
+                    tabBarShowLabel: false,
+                    tabBarStyle: { backgroundColor: Colors.light_bg },
+                    headerStyle: { backgroundColor: Colors.light_bg },
+                    headerTintColor: Colors.dark_text,
+                    headerTitleStyle: { fontWeight: "bold" },
+                }}>
+                <BottomTab.Screen
+                    name="All Expenses"
+                    component={AllExpScreen}
+                    options={({ navigation }) => ({
+                        headerRight: () => headerIcon(navigation),
+                        tabBarIcon: ({ focused, size, color }) => {
+                            return (
+                                <View style={focused && { width: "93%", paddingVertical: 5, backgroundColor: Colors.dark_text, borderRadius: 10, alignItems: "center" }}>
+                                    <Ionicons name="hourglass-outline" color={focused ? Colors.light_bg : Colors.dark_text} size={size} />
+                                </View>
+                            );
+                        },
+                    })}
+                />
+                <BottomTab.Screen
+                    name="Recent Expenses"
+                    component={AllExpScreen}
+                    options={{
+                        tabBarIcon: ({ focused, size, color }) => {
+                            return (
+                                <View style={focused && { width: "93%", paddingVertical: 5, backgroundColor: Colors.dark_text, borderRadius: 10, alignItems: "center" }}>
+                                    <Ionicons name="calendar" color={focused ? Colors.light_bg : Colors.dark_text} size={size} />
+                                </View>
+                            );
+                        },
+                    }}
+                />
+            </BottomTab.Navigator>
+        );
+    };
+
     return (
         <View style={styles.container}>
             <StatusBar style="auto" />
             <NavigationContainer>
-                {/* <Stack.Navigator>
+                <Stack.Navigator
+                    screenOptions={{
+                        animation: "slide_from_right",
+                    }}>
                     <Stack.Screen
-                        name="expenses"
-                        component={AllExpScreen}
-                        options={{
-                            headerRight: headerIcon,
+                        name="bottomTabs"
+                        component={BottomTabsNavigator}
+                        options={({ navigation }) => ({
+                            headerShown: false,
                             headerTintColor: Colors.dark_text,
                             headerStyle: { backgroundColor: Colors.light_bg },
-                        }}
+                        })}
                     />
-                </Stack.Navigator> */}
-                <BottomTab.Navigator
-                    screenOptions={{
-                        tabBarShowLabel: false,
-                        tabBarStyle: { backgroundColor: Colors.light_bg },
-                        headerStyle: { backgroundColor: Colors.light_bg },
-                        headerTintColor: Colors.dark_text,
-                        headerTitleStyle: { fontWeight: "bold" },
-                        // tabBarActiveBackgroundColor: Colors.dark_text,
-                    }}>
-                    <BottomTab.Screen
-                        name="All Expenses"
-                        component={AllExpScreen}
-                        options={{
-                            headerRight: headerIcon,
-                            tabBarIcon: ({ focused, size, color }) => {
-                                return (
-                                    <View style={focused && { width: '93%', paddingVertical: 5, backgroundColor: Colors.dark_text, borderRadius: 10, alignItems: 'center' }}>
-                                        <Ionicons name="hourglass-outline" color={focused ? Colors.light_bg : Colors.dark_text} size={size} />
-                                    </View>
-                                );
-                            },
-                        }}
+                    <Stack.Screen
+                        name="addExpenses"
+                        component={AddExpenseScreen}
+                        options={({ navigation }) => ({
+                            title: "Add Expenses Below",
+                            headerTitleAlign: "center",
+                            headerTintColor: Colors.dark_text,
+                            headerStyle: { backgroundColor: Colors.light_bg },
+                        })}
                     />
-                    <BottomTab.Screen
-                        name="Recent Expenses"
-                        component={AllExpScreen}
-                        options={{
-                            tabBarIcon: ({ focused, size, color }) => {
-                                return (
-                                    <View style={focused && { width: '93%', paddingVertical: 5, backgroundColor: Colors.dark_text, borderRadius: 10, alignItems: 'center' }}>
-                                        <Ionicons name="calendar" color={focused ? Colors.light_bg : Colors.dark_text} size={size} />
-                                    </View>
-                                );
-                            },
-                        }}
+                    <Stack.Screen
+                        name="manageExpenses"
+                        component={ManageExpenses}
+                        options={({ navigation }) => ({
+                            title: "Edit Expense Below",
+                            headerTitleAlign: "center",
+                            headerTintColor: Colors.dark_text,
+                            headerStyle: { backgroundColor: Colors.light_bg },
+                            animation: "slide_from_bottom",
+                        })}
                     />
-                </BottomTab.Navigator>
+                </Stack.Navigator>
             </NavigationContainer>
         </View>
     );

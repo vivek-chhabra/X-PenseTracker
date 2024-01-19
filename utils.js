@@ -1,7 +1,8 @@
 export const Colors = {
     white: "white",
-    light_bg: "#6ba199",
-    light_text: "#51837b",
+    light_bg: "#99c8c0",
+    light_text100: "#709c95",
+    light_text200: "#51837b",
     dark_text: "#27433e",
     // white: "white",
     // light_bg: "#a89bcf",
@@ -16,11 +17,15 @@ export const Colors = {
 export const getSum = (arr, key) => {
     let total = 0;
     for (let i of arr) {
-        total += i[key];
+        total += +i[key];
     }
     return total;
 };
 
 export const getFormattedDate = (date) => {
     return `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`;
+};
+
+String.prototype.removeFrontSpaces = function () {
+	return this.replace(/^\s+/, '');
 };

@@ -1,17 +1,25 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import React from "react";
 import { Colors } from "../utils";
+import Ripple from "react-native-material-ripple";
+import { useNavigation } from "@react-navigation/native";
 
 export default function ExpenseItem({ data }) {
-    const { expense, amount } = data;
+    const { expenseText, expenseAmt, date } = data;
+    const navigation = useNavigation();
+
+    const handleEdit = () => {
+        navigation.navigate("manageExpenses", { data });
+    };
+
     return (
-        <Pressable style={styles.expense} onPress={() => console.log('working')}>
-            <View>
-                <Text style={{ fontWeight: "bold", color: Colors.dark_text, fontSize: 16 }}>{expense}</Text>
-                <Text style={{ fontSize: 12 }}>2021-02-02</Text>
+        <Ripple style={styles.expense} onPress={handleEdit}>
+            <View style={{ width: "80%" }}>
+                <Text style={{ fontWeight: "bold", color: Colors.dark_text, fontSize: 16 }}>{expenseText}</Text>
+                <Text style={{ fontSize: 12, marginTop: 5, fontWeight: "bold", opacity: 0.5 }}>{date}</Text>
             </View>
-            <Text style={styles.amt}>₹{amount.toFixed(2)}</Text>
-        </Pressable>
+            <Text style={styles.amt}>₹ {expenseAmt}</Text>
+        </Ripple>
     );
 }
 
@@ -25,6 +33,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 8,
         backgroundColor: Colors.light_bg,
+        marginBottom: 10,
+        gap: 10,
     },
     amt: {
         minWidth: 60,
