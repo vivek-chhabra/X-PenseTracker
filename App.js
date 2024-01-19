@@ -1,7 +1,7 @@
 import { View, StyleSheet, Pressable } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AllExpScreen from "./screens/AllExpScreen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -9,12 +9,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "./utils";
 import AddExpenseScreen from "./screens/AddExpenseScreen";
 import ManageExpenses from "./screens/ManageExpenses";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
     const Stack = createNativeStackNavigator();
     const BottomTab = createBottomTabNavigator();
 
-    const [expenses, setExpenses] = useState([]);
+    const [AllExpenses, setAllExpenses] = useState([]);
 
     const headerIcon = (navigation) => {
         return (
@@ -23,6 +24,14 @@ export default function App() {
             </Pressable>
         );
     };
+
+    useEffect(() => {
+        (async () => {
+            const res = await AsyncStorage.getItem("expenses");
+            data = JSON.parse(res);
+            setAllExpenses(data);
+        })();
+    }, []);
 
     const BottomTabsNavigator = () => {
         return (
