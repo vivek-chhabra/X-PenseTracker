@@ -9,7 +9,7 @@ export default function ManageExpenses({ navigation, route }) {
     const { data } = route.params;
 
     const handleDelete = async () => {
-        let expensesData = await AsyncStorage.getItem("expenses");
+        let expensesData = await AsyncStorage.getItem("expenses", { data });
         expensesData = JSON.parse(expensesData);
         expensesData = expensesData.filter((exp) => exp._id !== data._id);
         expensesData = JSON.stringify(expensesData);

@@ -5,7 +5,7 @@ import CustomButton from "../components/CustomButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function AddExpenseScreen({ route, navigation }) {
-    const { data } = route.params;
+    const { data = undefined } = route?.params || {};
 
     const [expenseText, setExpenseText] = useState(data?.expenseText || "");
     const [expenseAmt, setExpenseAmt] = useState(data?.expenseAmt || "");
@@ -19,7 +19,7 @@ export default function AddExpenseScreen({ route, navigation }) {
         let expensesData = await AsyncStorage.getItem("expenses");
         if (expensesData) {
             expensesData = JSON.parse(expensesData);
-            expensesData = data ? [{...data, expenseText, expenseAmt}, ...expensesData.filter(exp => exp._id !== data._id)] : [{ expenseText, expenseAmt, date: `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`, _id: Math.random() }, ...expensesData];
+            expensesData = data ? [{ ...data, expenseText, expenseAmt }, ...expensesData.filter((exp) => exp._id !== data._id)] : [{ expenseText, expenseAmt, date: `${date.getDate()}-${date.getMonth() + 1}-${date.getFullYear()}`, _id: Math.random() }, ...expensesData];
             expensesData = JSON.stringify(expensesData);
             AsyncStorage.setItem("expenses", expensesData);
         } else {
@@ -55,6 +55,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         fontSize: 16,
         color: Colors.dark_text,
-        fontWeight: 'bold'
+        fontWeight: "bold",
     },
 });

@@ -14,7 +14,7 @@ export default function ExpenseItem({ data }) {
 
     return (
         <Ripple style={styles.expense} onPress={handleEdit}>
-            <View style={{ width: "80%" }}>
+            <View style={{ minWidth: "50%", maxWidth: "80%" }}>
                 <Text style={{ fontWeight: "bold", color: Colors.dark_text, fontSize: 16 }}>{expenseText}</Text>
                 <Text style={{ fontSize: 12, marginTop: 5, fontWeight: "bold", opacity: 0.5 }}>{date}</Text>
             </View>

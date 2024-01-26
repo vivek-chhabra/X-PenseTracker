@@ -15,23 +15,14 @@ export default function App() {
     const Stack = createNativeStackNavigator();
     const BottomTab = createBottomTabNavigator();
 
-    const [AllExpenses, setAllExpenses] = useState([]);
-
+    const data = { expenseText: "", expenseAmt: "" };
     const headerIcon = (navigation) => {
         return (
-            <Pressable style={styles.icon} onPress={() => navigation.navigate("addExpenses", { expenses, setExpenses })}>
+            <Pressable style={styles.icon} onPress={() => navigation.navigate("addExpenses")}>
                 <Ionicons name="add-circle-outline" color={Colors.dark_text} style={{ fontSize: 30, color: Colors.light_bg, textAlign: "center", left: 1, bottom: 1 }} />
             </Pressable>
         );
     };
-
-    useEffect(() => {
-        (async () => {
-            const res = await AsyncStorage.getItem("expenses");
-            data = JSON.parse(res);
-            setAllExpenses(data);
-        })();
-    }, []);
 
     const BottomTabsNavigator = () => {
         return (
